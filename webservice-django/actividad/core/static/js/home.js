@@ -1,4 +1,5 @@
 $(document).ready(function(){
+    arr = [];
     $("#boton").click(function(){
         $.ajax({
             type: 'GET',
@@ -7,22 +8,27 @@ $(document).ready(function(){
             success: function(data){
                 var theadrow =  "<tr>";
                 $.each(Object.keys(data[0]), function(i, item){
-                    if(item != "comentarios"){
-                        theadrow+= "<td>" + capitalizar(item) + "</td>";
-                    }
+                    arr.push(item);
+                    theadrow += "<td>" + capitalizar(item) + "</td>";
                 });
                 $(theadrow).append("</tr>");
                 $("#tabla>thead").append(theadrow);
+                var tbodyrow =  "<tr>";
                 $.each(data, function(i, item){
-                    var irrenunciable = item.irrenunciable > 0 ? "SI" : "NO";
-                    var tbodyrow =  "<tr>" +
-                                        "<td>" + item.nombre + "</td>" +
-                                        "<td>" + item.fecha + "</td>" +
-                                        "<td>" + irrenunciable + "</td>" +
-                                        "<td>" + item.tipo + "</td>" +
-                                    "</tr>";
-                    $("#tabla>tbody").append(tbodyrow);
+                    $.each(arr, function(i, x){
+                        console.log(typeof(item[x]))
+                        if(item[x] == 1 || item[x] == 0){
+                            if (item[x] == 1){
+                                item[x] = "SI";
+                            } else {
+                                item[x] = "NO";
+                            }
+                        }
+                        tbodyrow += "<td>"+ item[x] +"</td>";
+                    })
+                    tbodyrow+= "</tr>";
                 });
+                $("#tabla>tbody").append(tbodyrow);
             },
         });
     });
